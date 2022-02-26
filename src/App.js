@@ -1,41 +1,133 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
+// @ts-ignore
 import logo from "./assets/logo.svg";
 // import checkerOn from "./assets/checker-on.svg";
 // import checkerOff from "./assets/checker-off.svg";
+// @ts-ignore
 import avialogo from "./assets/avialogo.svg";
 import "./App.css";
 import { useState } from "react";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import ticketNormalize from "./helper/ticketNormalize.js";
+import { Ticket } from "./components/Ticket";
+// import { Sidebar } from "./components/Sidebar";
+const LOW_PRICE = "lowprice";
+const FASTER_PRICE = "faster";
+const OPTIM_PRICE = "optim";
 
 function App() {
   const [searchId, setSearchId] = useState();
   const [tickets, settickets] = useState([]);
   const [stop, setStop] = useState(false);
   const [sortTickets, setsortTickets] = useState([]);
-  // const [kye, setkye] = useState(false);
+  const [filter, setFilter] = useState({
+    all: true,
+    without: false,
+    one: false,
+    two: false,
+    three: false,
+  });
 
-  // useEffect(() => {
-  //   if (stop === true) {
-  //     setSortTickets(tickets.slice(0, 4));
-  //   }
-  // }, [stop]);
+  // const [sorterQveri, setsorterQveri] = useState(false);
 
-  // useEffect(() => {
-  //   fetch("https://front-test.beta.aviasales.ru/search")
-  //     .then((res) => res.json())
-  //     .then((res) => {
-  //       console.log("res:", res);
-  //       setSearchId(res.searchId);
-  //     })
-  //     .catch((e) => console.log(e));
-  // }, []);
-  // useEffect(() => {
-  //   if (kye) {
-  //     console.log(tickets);
-  //     setSortTickets(tickets.slice(0, 4));
-  //   }
-  // }, [kye]);
+  const [sorterlowprice, setsorterlowprice] = useState(false);
+  const [sorterfaster, setsorterfaster] = useState(false);
+  const [sorteroptim, setsorteroptim] = useState(false);
+  // const [sorterQveri, setsorterQveri] = useState();
+
+  const schet = useRef(0);
+  let clonTickets = useRef([]);
+
+  function onButtonClick() {
+    schet.current = schet.current + 5;
+    setsortTickets((prev) => [
+      ...prev,
+      ...ticketNormalize(
+        filterTickets(clonTickets.current).slice(
+          0 + schet.current,
+          5 + schet.current
+        )
+      ),
+    ]);
+  }
+
+  function allSorter(clonTicketsed) {
+    if (sorterlowprice) {
+      return clonTicketsed.sort((a, b) => a.price - b.price);
+    }
+    if (sorterfaster) {
+      return clonTicketsed.sort(
+        (a, b) =>
+          Number(a.segments[0].duration) +
+          Number(a.segments[1].duration) -
+          (Number(b.segments[0].duration) + Number(b.segments[1].duration))
+      );
+    }
+    if (sorteroptim) {
+      return clonTicketsed.sort((a, b) => a.price - b.price);
+    }
+    return clonTicketsed;
+  }
+
+  function filterTickets(clonTicketsSorted) {
+    return clonTicketsSorted.filter((el) => {
+      if (filter.all) return true;
+      if (
+        filter.without &&
+        el.segments[0].stops.length === 0 &&
+        el.segments[1].stops.length === 0
+      )
+        return true;
+      if (
+        filter.one &&
+        el.segments[0].stops.length === 1 &&
+        el.segments[1].stops.length === 1
+      )
+        return true;
+      if (
+        filter.two &&
+        el.segments[0].stops.length === 2 &&
+        el.segments[1].stops.length === 2
+      )
+        return true;
+      if (
+        filter.three &&
+        el.segments[0].stops.length === 3 &&
+        el.segments[1].stops.length === 3
+      )
+        return true;
+    });
+  }
+  useEffect(() => {
+    if (sorterlowprice) {
+      setFilter({
+        all: true,
+        without: false,
+        one: false,
+        two: false,
+        three: false,
+      });
+    }
+    if (sorterfaster) {
+      setFilter({
+        all: true,
+        without: false,
+        one: false,
+        two: false,
+        three: false,
+      });
+    }
+    if (sorteroptim) {
+      setFilter({
+        all: false,
+        without: true,
+        one: false,
+        two: false,
+        three: false,
+      });
+    }
+  }, [sorterlowprice, sorterfaster, sorteroptim]);
 
   useEffect(() => {
     if (!searchId) {
@@ -43,13 +135,19 @@ function App() {
     } else if (searchId && stop === false) {
       subscribe();
     } else if (stop) {
-      console.log(tickets);
-      setsortTickets(tickets.slice(0, 100));
-      // ticketNormalize(sortTickets);
+      clonTickets.current = [...tickets];
+      schet.current = 0;
+      // console.log(tickets);
+      setsortTickets(
+        ticketNormalize(
+          filterTickets(allSorter(clonTickets.current)).slice(0, 5)
+        )
+      );
+      console.log(clonTickets.current);
     }
-  }, [searchId, tickets]); //, kye
+  }, [searchId, tickets, filter]); //, kye
 
-  const subscribeSearchId = () => {
+  function subscribeSearchId() {
     fetch("https://front-test.beta.aviasales.ru/search")
       .then((res) => res.json())
       .then((res) => {
@@ -57,9 +155,9 @@ function App() {
         setSearchId(res.searchId);
       })
       .catch((e) => console.log(e));
-  };
+  }
 
-  const subscribe = async () => {
+  async function subscribe() {
     try {
       const url = `https://front-test.beta.aviasales.ru/tickets?searchId=${searchId}`;
       const ticketsPart = await axios.get(url);
@@ -79,33 +177,29 @@ function App() {
         subscribe();
       }, 1000);
     }
-  };
+  }
 
-  // useEffect(() => {
-  //   if (searchId && stop === false) {
-  //       subscribe();
-  //   }
-  //   async function subscribe() {
-  //     try {
-  //       let response = await fetch(
-  //         `https://front-test.beta.aviasales.ru/tickets?searchId=${searchId}`
-  //       );
-  //       let ticketsPart = await response.json();
-  //       if (ticketsPart.stop) {
-  //         setStop(true);
-  //       }
-  //       settickets([...tickets, ...ticketsPart.tickets]);
-  //       console.log(ticketsPart);
-  //     } catch (e) {
-  //       setTimeout(() => {
-  //         console.log(e);
-  //         if (!stop) {
-  //           setkye(!kye);
-  //         }
-  //       }, 1000);
-  //     }
-  //   }
-  // }, [searchId, tickets, kye]);
+  const sorterHandler = (sortedButton) => {
+    switch (sortedButton) {
+      case LOW_PRICE:
+        setsorterlowprice(!sorterlowprice);
+        setsorterfaster(false);
+        setsorteroptim(false);
+        break;
+      case FASTER_PRICE:
+        setsorterfaster(!sorterfaster);
+        setsorterlowprice(false);
+        setsorteroptim(false);
+        break;
+      case OPTIM_PRICE:
+        setsorteroptim(!sorteroptim);
+        setsorterlowprice(false);
+        setsorterfaster(false);
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <div className="App">
@@ -114,12 +208,154 @@ function App() {
           <img src={logo} className="App-logo" alt="logo" />
         </div>
         <div className="main">
-          <Sidebar />
-          <Filter />
+          <div className="dumi">
+            <div className="sidebar">
+              <h3>количество пересадок</h3>
+              <form>
+                <label>
+                  <input
+                    type="checkbox"
+                    className="input visually-hidden"
+                    onChange={() =>
+                      setFilter({
+                        all: true,
+                        without: false,
+                        one: false,
+                        two: false,
+                        three: false,
+                      })
+                    }
+                    checked={filter.all}
+                  />
+                  <span className="checker"></span>
+                  Все
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    className="input visually-hidden"
+                    onChange={() =>
+                      setFilter({
+                        all: false,
+                        without: true,
+                        one: false,
+                        two: false,
+                        three: false,
+                      })
+                    }
+                    checked={filter.without}
+                  />
+                  <span className="checker"></span>
+                  Без пересадок
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    className="input visually-hidden"
+                    onChange={() =>
+                      setFilter({
+                        all: false,
+                        without: false,
+                        one: true,
+                        two: false,
+                        three: false,
+                      })
+                    }
+                    checked={filter.one}
+                  />
+                  <span className="checker"></span>1 пересадка
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    className="input visually-hidden"
+                    onChange={() =>
+                      setFilter({
+                        all: false,
+                        without: false,
+                        one: false,
+                        two: true,
+                        three: false,
+                      })
+                    }
+                    checked={filter.two}
+                  />
+                  <span className="checker"></span>2 пересадка
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    className="input visually-hidden"
+                    onChange={() =>
+                      setFilter({
+                        all: false,
+                        without: false,
+                        one: false,
+                        two: false,
+                        three: true,
+                      })
+                    }
+                    checked={filter.three}
+                  />
+                  <span className="checker"></span>3 пересадка
+                </label>
+              </form>
+            </div>
+          </div>
+          <div className="filter2">
+            <div
+              className={`filter2__element filter2__low-price ${
+                sorterlowprice ? "filter2__element__clicked" : ""
+              }`}
+              onClick={() => {
+                return sorterHandler(LOW_PRICE);
+              }}
+            >
+              Самый дешёвый
+            </div>
+            <div
+              className={`filter2__element filter2__faster ${
+                sorterfaster ? "filter2__element__clicked" : ""
+              }`}
+              onClick={() => sorterHandler(FASTER_PRICE)}
+            >
+              Самый быстрый
+            </div>
+            <div
+              className={`filter2__element filter2__optim ${
+                sorteroptim ? "filter2__element__clicked" : ""
+              }`}
+              onClick={() => sorterHandler(OPTIM_PRICE)}
+            >
+              Оптимальный
+            </div>
+          </div>
           <div className="tickets">
-            {sortTickets.map((tickett) => (
-              <Ticket key={uuidv4()} ticket={tickett} stop={stop} />
-            ))}
+            {stop ? (
+              sortTickets.map((tickett) => (
+                <Ticket key={uuidv4()} ticket={tickett} stop={stop} />
+              ))
+            ) : (
+              <div
+                style={{
+                  // display: "block",
+                  textAlign: "center",
+                  fontSize: "19px",
+                  color: "#2196f3",
+                }}
+              >
+                Загрузка...
+                <hr />
+              </div>
+            )}
+            {stop ? (
+              <input
+                className="inputButtonLoud"
+                type="button"
+                value="Показать еще 5 билетов!"
+                onClick={onButtonClick}
+              ></input>
+            ) : null}
           </div>
         </div>
       </div>
@@ -127,157 +363,7 @@ function App() {
   );
 }
 
-function Sidebar() {
-  return (
-    <div className="dumi">
-      <div className="sidebar">
-        <h3>количество пересадок</h3>
-        <form>
-          <label>
-            <input type="checkbox" className="input visually-hidden" />
-            <span className="checker"></span>
-            Все
-          </label>
-          <label>
-            <input type="checkbox" className="input visually-hidden" />
-            <span className="checker"></span>
-            Без пересадок
-          </label>
-          <label>
-            <input type="checkbox" className="input visually-hidden" />
-            <span className="checker"></span>1 пересадка
-          </label>
-          <label>
-            <input type="checkbox" className="input visually-hidden" />
-            <span className="checker"></span>2 пересадка
-          </label>
-          <label>
-            <input type="checkbox" className="input visually-hidden" />
-            <span className="checker"></span>3 пересадка
-          </label>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-function Filter() {
-  return (
-    <div className="filter2">
-      <div className="filter2__element filter2__low-price filter2__element__clicked">
-        Самый дешёвый
-      </div>
-      <div className="filter2__element filter2__faster">Самый быстрый</div>
-    </div>
-  );
-}
-
-function Ticket({ ticket, stop }) {
-  if (stop) {
-    console.log(stop);
-    return (
-      <div className="ticket">
-        <div className="ticket__header">
-          <div className="ticket__price">
-            {ticket.price
-              .toString()
-              .split("")
-              .reverse()
-              .reduce((sum, char, i) => {
-                if (i % 3 === 0) {
-                  return sum + " " + char;
-                }
-                return sum + char;
-              }, "бур ")
-              .split("")
-              .reverse()
-              .join("")}
-          </div>
-          <div className="ticket__logo">
-            <img src={`//pics.avs.io/99/36/${ticket.carrier}.png`} alt="sad" />
-          </div>
-        </div>
-        <div className="ticket_data-wrapper">
-          {ticket.segments.map((segment) => (
-            <TicketData key={uuidv4()} segment={segment} />
-          ))}
-        </div>
-      </div>
-    );
-  } else {
-    return null;
-  }
-}
-
-function TicketData({ segment }) {
-  return (
-    <div className="ticket_data">
-      <div className="ticket_data__item">
-        <p className="ticket_data__item__grey">{`${segment.origin}-${segment.destination}`}</p>
-        <p>
-          {new Date(segment.date).getHours() +
-            ":" +
-            new Date(segment.date).getMinutes() +
-            "-" +
-            new Date(
-              new Date(segment.date).setHours(
-                new Date(segment.date).getHours() +
-                  Math.ceil(segment.duration / 60)
-              )
-            ).getHours() +
-            ":" +
-            new Date(
-              new Date(segment.date).setMinutes(
-                new Date(segment.date).getMinutes() + segment.duration
-              )
-            ).getMinutes()}
-        </p>
-      </div>
-      <div className="ticket_data__item">
-        <p className="ticket_data__item__grey">В пути</p>
-        <p>
-          {Math.ceil(segment.duration / 60) +
-            " ч - " +
-            (segment.duration % 60) +
-            " м"}
-        </p>
-      </div>
-      <div className="ticket_data__item">
-        <p className="ticket_data__item__grey">
-          {segment.stops.length === 0
-            ? "Без пересадок"
-            : segment.stops.length === 1
-            ? "1 Пересадка"
-            : segment.stops.length >= 2
-            ? `${segment.stops.length} пересадки`
-            : ""}
-        </p>
-        <p>{segment.stops.join(", ")}</p>
-      </div>
-    </div>
-  );
-}
 export default App;
-
-// function ticketNormalize(arrTicket) {
-//   function priceNormalize(price) {
-//     return price
-//       .toString()
-//       .split("")
-//       .reverse()
-//       .reduce((sum, char, i) => {
-//         if (i % 3 === 0) {
-//           return sum + " " + char;
-//         }
-//         return sum + char;
-//       }, "Р ")
-//       .split("")
-//       .reverse()
-//       .join("");
-//   }
-//   return arrTicket.map((ticket) => {
-//     return (
-//       price: priceNormalize(ticket.price) ) ,
-//       carrier : `//pics.avs.io/99/36/${ticket.carrier}.png`,
-//       segments:[] })
-// }
+function folse(folse) {
+  throw new Error("Function not implemented.");
+}
