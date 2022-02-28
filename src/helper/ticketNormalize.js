@@ -1,4 +1,4 @@
-export default function ticketNormalize(arrTicket) {
+export function ticketNormalize(arrTicket) {
   function priceNormalize(price) {
     return price
       .toString()
