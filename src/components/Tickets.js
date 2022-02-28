@@ -5,9 +5,7 @@ export function Tickets({ sortTickets, stop, uuidv4, onButtonClickColbeck }) {
   return (
     <div className="tickets">
       {stop ? (
-        sortTickets.map((ticket) => (
-          <Ticket key={uuidv4()} ticket={ticket} stop={stop} />
-        ))
+        sortTickets.map((ticket) => <Ticket key={uuidv4()} ticket={ticket} />)
       ) : (
         <div
           style={{

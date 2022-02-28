@@ -1,58 +1,34 @@
-import React, { useEffect } from "react";
-// @ts-ignore
-import logo from "./assets/logo.svg";
+import React from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import { TicketPage } from "./pages/TicketPage";
+import { DataTicketPage } from "./pages/DataTicketPage";
+import { OrderPage } from "./pages/OrderPage";
+import { Header } from "./pages/Header";
+import { store } from "./redux";
 import "./App.css";
-import { v4 as uuidv4 } from "uuid";
-import { useTicketNormalize } from "./helper/useTicketNormalize.js";
 
-import { Sidebar } from "./components/Sidebar";
-import { Filter2 } from "./components/Filter2";
-import { Tickets } from "./components/Tickets";
-
-function App() {
-  const {
-    sorterlowprice,
-    sorterfaster,
-    sorteroptim,
-    onButtonClickColbeck,
-    sortTickets,
-    stop,
-    setFilterColbeck,
-    filter,
-    sorterHandlerColbeck,
-    pervZaprosColbeck,
-  } = useTicketNormalize();
-
-  useEffect(() => {
-    pervZaprosColbeck();
-  }, []);
-
+export default function App() {
   return (
-    <div className="App">
-      <div className="app-wrapper">
-        <div className="header">
-          <img src={logo} className="App-logo" alt="logo" />
-        </div>
-        <div className="main">
-          <div className="dumi">
-            <Sidebar setFilterColbeck={setFilterColbeck} filter={filter} />
+    <Provider store={store}>
+      <Router>
+        <div className="App">
+          <div className="app-wrapper">
+            <Header />
+            <Switch>
+              <Route exact path="/">
+                <TicketPage />
+              </Route>
+              <Route exact path="/dataTicketPage">
+                <DataTicketPage />
+              </Route>
+              <Route exact path="/order">
+                <OrderPage />
+              </Route>
+            </Switch>
           </div>
-          <Filter2
-            sorterHandlerColbeck={sorterHandlerColbeck}
-            sorterlowprice={sorterlowprice}
-            sorterfaster={sorterfaster}
-            sorteroptim={sorteroptim}
-          />
-          <Tickets
-            sortTickets={sortTickets}
-            stop={stop}
-            uuidv4={uuidv4}
-            onButtonClickColbeck={onButtonClickColbeck}
-          />
         </div>
-      </div>
-    </div>
+      </Router>
+    </Provider>
   );
 }
-
-export default App;
