@@ -74,9 +74,16 @@ export function useTicketNormalize() {
     ]);
   };
   ////
-  //TODO:запросы
+  //TODO:запросы 1-"https://front-test.beta.aviasales.ru/search" 2-`https://front-test.beta.aviasales.ru/tickets?searchId=${searchId}`
   function subscribeSearchId() {
-    fetch("https://front-test.beta.aviasales.ru/search")
+    // try {
+    //   const searchIdPart = await axios.get("http://localhost:5000");
+    //   setSearchId(searchIdPart.data.title);
+    //   console.log(searchIdPart.data.title);
+    // } catch (e) {
+    //   console.log(e);
+    // }
+    fetch("http://localhost:5000/")
       .then((res) => res.json())
       .then((res) => {
         console.log("res:", res);
@@ -85,15 +92,16 @@ export function useTicketNormalize() {
       .catch((e) => console.log(e));
   }
   async function subscribe() {
+    //front-test.beta.aviasales.ru/tickets?searchId=4niyd
     try {
-      const url = `https://front-test.beta.aviasales.ru/tickets?searchId=${searchId}`;
+      const url = `http://localhost:5000/${searchId}`;
       const ticketsPart = await axios.get(url);
       // @ts-ignore
       if (ticketsPart.data.stop) {
         setStop(true);
       }
       settickets((prev) => [...prev, ...ticketsPart.data.tickets]);
-      console.log(ticketsPart.data);
+      console.log(ticketsPart);
       // @ts-ignore
     } catch (e) {
       setTimeout(() => {

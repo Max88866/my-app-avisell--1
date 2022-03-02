@@ -4,5 +4,13 @@ import { Ticket } from "../components/Ticket";
 
 export const DataTicketPage = () => {
   const ticket = useSelector((state) => state.ticket.currentticket);
-  return <Ticket ticket={ticket} />;
+  return (
+    <div>
+      Дата-тикет
+      <Ticket ticket={ticket} />
+      <Ticket ticket={ticket} />
+      <Ticket ticket={ticket} />
+      <Ticket ticket={ticket} />
+    </div>
+  );
 };

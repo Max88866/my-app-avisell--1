@@ -1,4 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
+// @ts-ignore
+import avialogo from "../../assets/avialogo.svg";
 
 const ticketSlice = createSlice({
   name: "ticket",

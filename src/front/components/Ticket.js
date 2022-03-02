@@ -19,7 +19,7 @@ export function Ticket({ ticket }) {
   };
 
   return (
-    <div className="ticket" onClick={handleClick}>
+    <div className="ticket" onClick={handleClick} style={{ cursor: "pointer" }}>
       <div className="ticket__header">
         <div className="ticket__price">{ticket.price}</div>
         <div className="ticket__logo">
