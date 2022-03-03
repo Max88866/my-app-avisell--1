@@ -83,7 +83,8 @@ export function useTicketNormalize() {
     // } catch (e) {
     //   console.log(e);
     // }
-    fetch("http://localhost:5000/")
+
+    fetch("http://localhost:5000/t")
       .then((res) => res.json())
       .then((res) => {
         console.log("res:", res);
@@ -92,7 +93,7 @@ export function useTicketNormalize() {
       .catch((e) => console.log(e));
   }
   async function subscribe() {
-    //front-test.beta.aviasales.ru/tickets?searchId=4niyd
+    // front-test.beta.aviasales.ru/tickets?searchId=4niyd
     try {
       const url = `http://localhost:5000/${searchId}`;
       const ticketsPart = await axios.get(url);

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ticketNormalize } from "./ticketNormalize";
 import { allSorter } from "./allSorter";
 import { filterTickets } from "./filterTickets";
+import { v4 as uuidv4 } from "uuid";
 // @ts-ignore
 // import logo512 from "../assets/logo512.png";
 
@@ -14,9 +15,10 @@ export function useTicketNormalizeOrderPage() {
   const [pervZapros, setpervZapros] = useState(false);
   const pervZaprosColbeck = () => setpervZapros(true);
 
-  // const [searchId, setSearchId] = useState();
+  const [searchId, setSearchId] = useState();
   const [tickets, settickets] = useState([
     {
+      id: uuidv4(),
       price: 12523,
       carrier: "FB",
       segments: [
@@ -37,6 +39,7 @@ export function useTicketNormalizeOrderPage() {
       ],
     },
     {
+      id: uuidv4(),
       price: 20600,
       carrier: "FV",
       segments: [
@@ -58,7 +61,7 @@ export function useTicketNormalizeOrderPage() {
     },
   ]);
   const [stop, setStop] = useState(true);
-  // let clonTickets = useRef([]);
+  let clonTickets = useRef([]);
   let schet = useRef(0);
   const [sortTickets, setsortTickets] = useState([]);
   const [sorterlowprice, setsorterlowprice] = useState(false);
@@ -90,8 +93,18 @@ export function useTicketNormalizeOrderPage() {
         )
       )
     );
-    // console.log(clonTickets);
+    clonTickets.current = [...tickets];
+
+    PosterTicket();
   }, []);
+  useEffect(() => {
+    if (clonTickets.current) {
+      setTimeout(() => {
+        subscribeSearchId();
+      }, 5000);
+      // console.log(clonTickets);
+    }
+  }, [clonTickets.current]);
 
   // useEffect(() => {
   //   setFilterTopMenu(sorterlowprice, sorterfaster, sorteroptim);
@@ -112,15 +125,42 @@ export function useTicketNormalizeOrderPage() {
   };
   //
   //TODO:запросы
-  // function subscribeSearchId() {
-  //   fetch("https://front-test.beta.aviasales.ru/search")
-  //     .then((res) => res.json())
-  //     .then((res) => {
-  //       console.log("res:", res);
-  //       setSearchId(res.searchId);
-  //     })
-  //     .catch((e) => console.log(e));
-  // }
+  // let user = {
+  //   name: "John",
+  //   surname: "Smith",
+  // };
+  async function PosterTicket() {
+    let response = await fetch("http://localhost:5000/profile", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json;charset=utf-8",
+      },
+      body: JSON.stringify(clonTickets.current),
+    });
+
+    let result = await response.json();
+    // let result2 = await result.json();
+    // alert("result.message");
+    console.log(result);
+    // console.log(result2);
+  }
+
+  function subscribeSearchId() {
+    fetch("http://localhost:5000/testsPostTikettt")
+      .then((res) => res.json())
+      .then((res) => {
+        // console.log("res:", res);
+        setSearchId(
+          ticketNormalize(
+            filterTickets(
+              allSorter(res, sorterlowprice, sorterfaster, sorteroptim),
+              filter
+            )
+          )
+        );
+      })
+      .catch((e) => console.log(e));
+  }
   // async function subscribe() {
   //   try {
   //     const url = `https://front-test.beta.aviasales.ru/tickets?searchId=${searchId}`;
@@ -206,6 +246,7 @@ export function useTicketNormalizeOrderPage() {
     // setFilterColbeck,
     // filter,
     // sorterHandlerColbeck,
+    searchId,
     pervZaprosColbeck,
   };
 }

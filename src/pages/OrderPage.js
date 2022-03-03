@@ -14,11 +14,13 @@ export const OrderPage = () => {
     onButtonClickColbeck,
     sortTickets,
     stop,
+    searchId,
     // setFilterColbeck,
     // filter,
     // sorterHandlerColbeck,
     pervZaprosColbeck,
   } = useTicketNormalizeOrderPage();
+
   useEffect(() => {
     pervZaprosColbeck();
   }, []);
@@ -42,16 +44,33 @@ export const OrderPage = () => {
   //     },
   //   ],
   // });
-  // const ticket = useSelector((state) => state.ticket.currentticket);
+  const ticketInCart = useSelector((state) => state.curt.itemInCart);
+
   return (
     <div>
       Ордер
-      <Tickets
+      {/* <Tickets
         sortTickets={sortTickets}
         uuidv4={uuidv4}
         stop={stop}
         onButtonClickColbeck={onButtonClickColbeck}
-      />
+      /> */}
+      {ticketInCart ? (
+        <Tickets
+          sortTickets={ticketInCart}
+          uuidv4={uuidv4}
+          stop={stop}
+          onButtonClickColbeck={onButtonClickColbeck}
+        />
+      ) : null}
+      {/* {searchId ? (
+        <Tickets
+          sortTickets={searchId}
+          uuidv4={uuidv4}
+          stop={stop}
+          onButtonClickColbeck={onButtonClickColbeck}
+        />
+      ) : null} */}
     </div>
   );
 };

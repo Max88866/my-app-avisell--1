@@ -6,6 +6,7 @@ const TicketsMasiv = [
     stop: true,
     tickets: [
       {
+        id: uuidv4(),
         price: 12523,
         carrier: "FB",
         segments: [
@@ -26,6 +27,7 @@ const TicketsMasiv = [
         ],
       },
       {
+        id: uuidv4(),
         price: 20600,
         carrier: "FV",
         segments: [
