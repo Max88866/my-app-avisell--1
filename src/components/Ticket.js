@@ -6,6 +6,10 @@ import { useHistory } from "react-router/";
 import { useDispatch, useSelector } from "react-redux";
 import { setCurrentticket } from "../redux/ticket/reducer";
 import { deleteItemFromCart, setItemInCart } from "../redux/cart/reducer";
+import {
+  deleteItemFromIzbranoe,
+  setItemInIzbranoe,
+} from "../redux/izbranoe/reducer";
 
 export function Ticket({ ticket }) {
   // if (stop) {
@@ -13,13 +17,23 @@ export function Ticket({ ticket }) {
 
   //   };}
 
-  const items = useSelector((state) => state.curt.itemInCart);
-  const isItemInCart = items.some((item) => item.id === ticket.id);
+  const InCart = useSelector((state) => state.curt.itemInCart);
+  const InIzbranoe = useSelector((state) => state.izbranoe.itemInIzbranoe);
+  const isItemInCart = InCart.some((item) => item.id === ticket.id);
+  const ticketInIzbranoe = InIzbranoe.some((item) => item.id === ticket.id);
   const dispatch = useDispatch();
   const history = useHistory();
   const handleClickData = () => {
     dispatch(setCurrentticket(ticket));
     history.push(`/dataTicketPage`);
+  };
+  const handleClickInIzbranoe = (e) => {
+    e.stopPropagation();
+    if (ticketInIzbranoe) {
+      dispatch(deleteItemFromIzbranoe(ticket.id));
+    } else {
+      dispatch(setItemInIzbranoe(ticket));
+    }
   };
   const handleClickInCart = (e) => {
     e.stopPropagation();
@@ -53,9 +67,25 @@ export function Ticket({ ticket }) {
         <button onClick={handleClickData} style={{ cursor: "pointer" }}>
           Подробнее
         </button>
-        <button style={{ cursor: "pointer" }}>sdf</button>
-        <button style={{ cursor: "pointer" }} onClick={handleClickInCart}>
-          купить
+        <button
+          style={{
+            cursor: "pointer",
+            background: ticketInIzbranoe ? "#2196f3" : null,
+            color: ticketInIzbranoe ? "#ffffff" : null,
+          }}
+          onClick={handleClickInIzbranoe}
+        >
+          {ticketInIzbranoe ? "Из избранного" : "В избранное"}
+        </button>
+        <button
+          style={{
+            cursor: "pointer",
+            background: isItemInCart ? "#2196f3" : null,
+            color: isItemInCart ? "#ffffff" : null,
+          }}
+          onClick={handleClickInCart}
+        >
+          {isItemInCart ? "Из корзины" : "В Корзину"}
         </button>
       </div>
     </div>

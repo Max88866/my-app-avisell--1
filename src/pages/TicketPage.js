@@ -11,6 +11,7 @@ export function TicketPage() {
     sorteroptim,
     onButtonClickColbeck,
     sortTickets,
+    // sortTicketsRedux,
     stop,
     setFilterColbeck,
     filter,
@@ -34,12 +35,26 @@ export function TicketPage() {
         sorterfaster={sorterfaster}
         sorteroptim={sorteroptim}
       />
-      <Tickets
-        sortTickets={sortTickets}
-        uuidv4={uuidv4}
-        stop={stop}
-        onButtonClickColbeck={onButtonClickColbeck}
-      />
+      <div>
+        <Tickets
+          sortTickets={sortTickets}
+          uuidv4={uuidv4}
+          stop={stop}
+          // onButtonClickColbeck={onButtonClickColbeck}
+        />
+        {stop ? (
+          <input
+            style={{
+              // display: "block",
+              marginTop: "20px",
+            }}
+            className="inputButtonLoud"
+            type="button"
+            value="Показать еще 5 билетов!"
+            onClick={() => onButtonClickColbeck()}
+          ></input>
+        ) : null}
+      </div>
     </div>
     // </div>
     // </div>

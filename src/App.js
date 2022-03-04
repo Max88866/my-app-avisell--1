@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import { TicketPage } from "./pages/TicketPage";
 import { DataTicketPage } from "./pages/DataTicketPage";
+import { IzbranoePage } from "./pages/IzbranoePage";
 import { OrderPage } from "./pages/OrderPage";
 import { Header } from "./pages/Header";
 import { store } from "./redux";
@@ -21,6 +22,9 @@ export default function App() {
               </Route>
               <Route exact path="/dataTicketPage">
                 <DataTicketPage />
+              </Route>
+              <Route exact path="/izbranoe">
+                <IzbranoePage />
               </Route>
               <Route exact path="/order">
                 <OrderPage />

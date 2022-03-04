@@ -69,6 +69,8 @@ export function ticketNormalize(arrTicket) {
 
   return arrTicket.map((ticket) => {
     return {
+      id: ticket.id,
+      price2: ticket.price,
       price: priceNormalize(ticket.price),
       carrier: carrierNormalize(ticket.carrier),
       segments: arrSegmentsNormalize(ticket.segments),

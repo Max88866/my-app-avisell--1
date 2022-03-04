@@ -1,7 +1,7 @@
 import React from "react";
 import { Ticket } from "./Ticket";
 
-export function Tickets({ sortTickets, stop, uuidv4, onButtonClickColbeck }) {
+export function Tickets({ sortTickets, stop, uuidv4 }) {
   return (
     <div className="tickets">
       {stop ? (
@@ -19,14 +19,6 @@ export function Tickets({ sortTickets, stop, uuidv4, onButtonClickColbeck }) {
           <hr />
         </div>
       )}
-      {stop ? (
-        <input
-          className="inputButtonLoud"
-          type="button"
-          value="Показать еще 5 билетов!"
-          onClick={() => onButtonClickColbeck()}
-        ></input>
-      ) : null}
     </div>
   );
 }

@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { useTicketNormalizeOrderPage } from "../helper/useTicketNormalizeOrderPage.js";
+import { useTicketNormalizeIzbranoePage } from "../helper/useTicketNormalizeIzbranoePage.js";
 // @ts-ignore
 // import avialogo from "../assets/avialogo.svg";
 import { Tickets } from "../components/Tickets";
 import { v4 as uuidv4 } from "uuid";
-import { Ticket } from "../components/Ticket.js";
 
-export const OrderPage = () => {
+export const IzbranoePage = () => {
   const {
     // sorterlowprice,
     // sorterfaster,
     // sorteroptim,
     onButtonClickColbeck,
-    sortTickets,
+    // sortTickets,
     stop,
-    searchId,
+    // searchId,
     // setFilterColbeck,
     // filter,
     // sorterHandlerColbeck,
     pervZaprosColbeck,
-  } = useTicketNormalizeOrderPage();
+  } = useTicketNormalizeIzbranoePage();
 
   useEffect(() => {
     pervZaprosColbeck();
@@ -45,9 +44,9 @@ export const OrderPage = () => {
   //     },
   //   ],
   // });
-  const ticketInCart = useSelector((state) => state.curt.itemInCart);
-  const calcTotalPrice = (items) =>
-    items.reduce((acc, Cart) => (acc += Cart.price2), 0);
+  const ticketInIzbranoe = useSelector(
+    (state) => state.izbranoe.itemInIzbranoe
+  );
 
   return (
     <div>
@@ -57,10 +56,9 @@ export const OrderPage = () => {
         stop={stop}
         onButtonClickColbeck={onButtonClickColbeck}
       /> */}
-      {ticketInCart.map((ticketInCart1) => (
-        <Ticket ticket={ticketInCart1} key={uuidv4()} />
-      ))}
-      {ticketInCart.length === 0 && (
+      {ticketInIzbranoe.length ? (
+        <Tickets sortTickets={ticketInIzbranoe} uuidv4={uuidv4} stop={stop} />
+      ) : (
         <div
           style={{
             // display: "block",
@@ -69,23 +67,10 @@ export const OrderPage = () => {
             color: "#2196f3",
           }}
         >
-          Корзина пуста...
+          Нет избранного...
           <hr />
         </div>
       )}
-      <div
-        style={{
-          // display: "block",
-          textAlign: "center",
-          fontSize: "19px",
-          color: "#2196f3",
-        }}
-      >
-        <span>
-          {ticketInCart.length} билета на сумму {calcTotalPrice(ticketInCart)}{" "}
-          руб.
-        </span>
-      </div>
       {/* {searchId ? (
         <Tickets
           sortTickets={searchId}

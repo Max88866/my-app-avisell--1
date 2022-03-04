@@ -3,11 +3,15 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { ticketNormalize } from "./ticketNormalize";
 import { allSorter } from "./allSorter";
 import { filterTickets } from "./filterTickets";
+import { useDispatch, useSelector } from "react-redux";
+import { setsortTicketsRedux } from "../redux/ticket/reducer";
 
 export function useTicketNormalize() {
   const LOW_PRICE = "lowprice";
   const FASTER_PRICE = "faster";
   const OPTIM_PRICE = "optim";
+  const dispatch = useDispatch();
+  const sortTicketsRedux = useSelector((state) => state.ticket.sortTickets);
 
   const [pervZapros, setpervZapros] = useState(false);
   const pervZaprosColbeck = () => setpervZapros(true);
@@ -32,7 +36,7 @@ export function useTicketNormalize() {
   ///
   //TODO:  юз эфект при нажатии на фильтры топ меню и сайд бар создается новый клон.
   useEffect(() => {
-    if (!searchId) {
+    if (!searchId && sortTicketsRedux.length === 0) {
       subscribeSearchId();
     } else if (searchId && stop === false) {
       subscribe();
@@ -55,6 +59,20 @@ export function useTicketNormalize() {
       // console.log(clonTickets);
     }
   }, [searchId, tickets, filter]);
+  useEffect(() => {
+    if (sortTicketsRedux.length !== 0) {
+      setStop(true);
+      settickets((prev) => [...prev, ...sortTicketsRedux]);
+    }
+    // console.log(clonTickets);
+  }, []);
+
+  useEffect(() => {
+    if (sortTicketsRedux.length === 0) {
+      dispatch(setsortTicketsRedux([...tickets]));
+    }
+    // console.log(clonTickets);
+  }, [sortTickets]);
 
   useEffect(() => {
     setFilterTopMenu(sorterlowprice, sorterfaster, sorteroptim);
@@ -174,6 +192,7 @@ export function useTicketNormalize() {
     sorteroptim,
     onButtonClickColbeck,
     sortTickets,
+    // sortTicketsRedux,
     stop,
     setFilterColbeck,
     filter,
