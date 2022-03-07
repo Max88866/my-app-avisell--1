@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useTicketNormalizeOrderPage } from "../helper/useTicketNormalizeOrderPage.js";
 // @ts-ignore
 // import avialogo from "../assets/avialogo.svg";
 import { Tickets } from "../components/Tickets";
 import { v4 as uuidv4 } from "uuid";
 import { Ticket } from "../components/Ticket.js";
+import { setItemInCart, setnagal } from "../redux/cart/reducer";
 
 export const OrderPage = () => {
+  const dispatch = useDispatch();
+  const nagal = useSelector((state) => state.curt.nagal);
   const {
     // sorterlowprice,
     // sorterfaster,
@@ -48,7 +51,39 @@ export const OrderPage = () => {
   const ticketInCart = useSelector((state) => state.curt.itemInCart);
   const calcTotalPrice = (items) =>
     items.reduce((acc, Cart) => (acc += Cart.price2), 0);
+  // const handlclick = () => {
+  //   dispatch(setnagal(nagal));
+  //   PosterTicket();
+  //   async function PosterTicket() {
+  //     let response = await fetch("http://localhost:5000/profile", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json;charset=utf-8",
+  //       },
+  //       body: JSON.stringify(ticketInCart),
+  //     });
 
+  //     let result = await response.json();
+  //     // let result2 = await result.json();
+  //     // alert("result.message");
+  //     console.log(result);
+  //     // console.log(result2);
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (ticketInCart.length === 0) {
+  //     subscribeSearchId();
+  //   }
+  // }, []);
+  // function subscribeSearchId() {
+  //   fetch("http://localhost:5000/testsPostTikettt")
+  //     .then((res) => res.json())
+  //     .then((res) => {
+  //       // console.log("res:", res);
+  //       dispatch(setItemInCart(res));
+  //     })
+  //     .catch((e) => console.log(e));
+  // }
   return (
     <div>
       {/* <Tickets
@@ -83,8 +118,18 @@ export const OrderPage = () => {
       >
         <span>
           {ticketInCart.length} билета на сумму {calcTotalPrice(ticketInCart)}{" "}
-          руб.
+          руб.{" "}
         </span>
+        <button
+          style={{
+            cursor: "pointer",
+            background: nagal ? "#2196f3" : null,
+            color: nagal ? "#ffffff" : null,
+          }}
+          // onClick={() => handlclick()}
+        >
+          {!nagal ? "Купить" : "Отменить"}
+        </button>
       </div>
       {/* {searchId ? (
         <Tickets

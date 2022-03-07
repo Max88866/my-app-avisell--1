@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useTicketNormalizeIzbranoePage } from "../helper/useTicketNormalizeIzbranoePage.js";
 // @ts-ignore
 // import avialogo from "../assets/avialogo.svg";
 import { Tickets } from "../components/Tickets";
 import { v4 as uuidv4 } from "uuid";
+import { setnagal } from "../redux/izbranoe/reducer";
 
 export const IzbranoePage = () => {
+  const dispatch = useDispatch();
+  const nagal = useSelector((state) => state.izbranoe.nagal);
   const {
     // sorterlowprice,
     // sorterfaster,
@@ -48,6 +51,9 @@ export const IzbranoePage = () => {
     (state) => state.izbranoe.itemInIzbranoe
   );
 
+  const calcTotalPrice = (items) =>
+    items.reduce((acc, Izbranoe) => (acc += Izbranoe.price2), 0);
+
   return (
     <div>
       {/* <Tickets
@@ -71,6 +77,29 @@ export const IzbranoePage = () => {
           <hr />
         </div>
       )}
+      <div
+        style={{
+          // display: "block",
+          textAlign: "center",
+          fontSize: "19px",
+          color: "#2196f3",
+        }}
+      >
+        <span>
+          {ticketInIzbranoe.length} билета на сумму{" "}
+          {calcTotalPrice(ticketInIzbranoe)} руб.{" "}
+        </span>
+        <button
+          style={{
+            cursor: "pointer",
+            background: nagal ? "#2196f3" : null,
+            color: nagal ? "#ffffff" : null,
+          }}
+          onClick={() => dispatch(setnagal(nagal))}
+        >
+          {!nagal ? "Зафиксировать" : "Отменить"}
+        </button>
+      </div>
       {/* {searchId ? (
         <Tickets
           sortTickets={searchId}

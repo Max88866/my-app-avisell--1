@@ -77,33 +77,33 @@ export function useTicketNormalizeOrderPage() {
   const setFilterColbeck = (x) => setFilter(x);
   ///
   //TODO:  юз эфект при нажатии на фильтры топ меню и сайд бар создается новый клон.
-  useEffect(() => {
-    // if (!searchId) {
-    //   subscribeSearchId();
-    // } else if (searchId && stop === false) {
-    //   subscribe();
-    // } else if (stop) {
-    // clonTickets.current = [...tickets];
-    // schet.current = 0;
-    setsortTickets(
-      ticketNormalize(
-        filterTickets(
-          allSorter(tickets, sorterlowprice, sorterfaster, sorteroptim),
-          filter
-        )
-      )
-    );
-    clonTickets.current = [...tickets];
-    PosterTicket();
-  }, []);
-  useEffect(() => {
-    if (clonTickets.current) {
-      setTimeout(() => {
-        subscribeSearchId();
-      }, 5000);
-      // console.log(clonTickets);
-    }
-  }, [clonTickets.current]);
+  // useEffect(() => {
+  //   // if (!searchId) {
+  //   //   subscribeSearchId();
+  //   // } else if (searchId && stop === false) {
+  //   //   subscribe();
+  //   // } else if (stop) {
+  //   // clonTickets.current = [...tickets];
+  //   // schet.current = 0;
+  //   setsortTickets(
+  //     ticketNormalize(
+  //       filterTickets(
+  //         allSorter(tickets, sorterlowprice, sorterfaster, sorteroptim),
+  //         filter
+  //       )
+  //     )
+  //   );
+  //   clonTickets.current = [...tickets];
+  //   PosterTicket();
+  // }, []);
+  // useEffect(() => {
+  //   if (clonTickets.current) {
+  //     setTimeout(() => {
+  //       subscribeSearchId();
+  //     }, 5000);
+  //     // console.log(clonTickets);
+  //   }
+  // }, [clonTickets.current]);
 
   // useEffect(() => {
   //   setFilterTopMenu(sorterlowprice, sorterfaster, sorteroptim);
@@ -128,38 +128,38 @@ export function useTicketNormalizeOrderPage() {
   //   name: "John",
   //   surname: "Smith",
   // };
-  async function PosterTicket() {
-    let response = await fetch("http://localhost:5000/profile", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json;charset=utf-8",
-      },
-      body: JSON.stringify(clonTickets.current),
-    });
+  // async function PosterTicket() {
+  //   let response = await fetch("http://localhost:5000/profile", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json;charset=utf-8",
+  //     },
+  //     body: JSON.stringify(clonTickets.current),
+  //   });
 
-    let result = await response.json();
-    // let result2 = await result.json();
-    // alert("result.message");
-    console.log(result);
-    // console.log(result2);
-  }
+  //   let result = await response.json();
+  //   // let result2 = await result.json();
+  //   // alert("result.message");
+  //   console.log(result);
+  //   // console.log(result2);
+  // }
 
-  function subscribeSearchId() {
-    fetch("http://localhost:5000/testsPostTikettt")
-      .then((res) => res.json())
-      .then((res) => {
-        // console.log("res:", res);
-        setSearchId(
-          ticketNormalize(
-            filterTickets(
-              allSorter(res, sorterlowprice, sorterfaster, sorteroptim),
-              filter
-            )
-          )
-        );
-      })
-      .catch((e) => console.log(e));
-  }
+  // function subscribeSearchId() {
+  //   fetch("http://localhost:5000/testsPostTikettt")
+  //     .then((res) => res.json())
+  //     .then((res) => {
+  //       // console.log("res:", res);
+  //       setSearchId(
+  //         ticketNormalize(
+  //           filterTickets(
+  //             allSorter(res, sorterlowprice, sorterfaster, sorteroptim),
+  //             filter
+  //           )
+  //         )
+  //       );
+  //     })
+  //     .catch((e) => console.log(e));
+  // }
   // async function subscribe() {
   //   try {
   //     const url = `https://front-test.beta.aviasales.ru/tickets?searchId=${searchId}`;

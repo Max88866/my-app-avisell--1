@@ -4,6 +4,7 @@ const izbranoeSlice = createSlice({
   name: "izbranoe",
   initialState: {
     itemInIzbranoe: [],
+    nagal: false,
   },
   reducers: {
     setItemInIzbranoe: (state, action) => {
@@ -14,9 +15,12 @@ const izbranoeSlice = createSlice({
         (item) => item.id !== action.payload
       );
     },
+    setnagal: (state, action) => {
+      state.nagal = !action.payload;
+    },
   },
 });
 
-export const { setItemInIzbranoe, deleteItemFromIzbranoe } =
+export const { setItemInIzbranoe, deleteItemFromIzbranoe, setnagal } =
   izbranoeSlice.actions;
 export default izbranoeSlice.reducer;

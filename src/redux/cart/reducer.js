@@ -4,6 +4,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState: {
     itemInCart: [],
+    nagal: false,
   },
   reducers: {
     setItemInCart: (state, action) => {
@@ -14,8 +15,12 @@ const cartSlice = createSlice({
         (item) => item.id !== action.payload
       );
     },
+    setnagal: (state, action) => {
+      state.nagal = !action.payload;
+    },
   },
 });
 
-export const { setItemInCart, deleteItemFromCart } = cartSlice.actions;
+export const { setItemInCart, deleteItemFromCart, setnagal } =
+  cartSlice.actions;
 export default cartSlice.reducer;
