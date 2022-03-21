@@ -5,6 +5,8 @@ const cartSlice = createSlice({
   initialState: {
     itemInCart: [],
     nagal: false,
+    itemInCartInBack: [],
+    nagal2: false,
   },
   reducers: {
     setItemInCart: (state, action) => {
@@ -18,9 +20,20 @@ const cartSlice = createSlice({
     setnagal: (state, action) => {
       state.nagal = !action.payload;
     },
+    setItemInCartMassiv: (state, action) => {
+      state.itemInCartInBack = [...state.itemInCartInBack, ...action.payload];
+    },
+    setnagal2: (state, action) => {
+      state.nagal2 = !action.payload;
+    },
   },
 });
 
-export const { setItemInCart, deleteItemFromCart, setnagal } =
-  cartSlice.actions;
+export const {
+  setItemInCart,
+  deleteItemFromCart,
+  setnagal,
+  setItemInCartMassiv,
+  setnagal2,
+} = cartSlice.actions;
 export default cartSlice.reducer;

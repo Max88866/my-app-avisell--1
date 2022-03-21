@@ -5,6 +5,7 @@ import { TicketPage } from "./pages/TicketPage";
 import { DataTicketPage } from "./pages/DataTicketPage";
 import { IzbranoePage } from "./pages/IzbranoePage";
 import { OrderPage } from "./pages/OrderPage";
+import { Muiprimer } from "./pages/Muiprimer";
 import { Header } from "./pages/Header";
 import { store } from "./redux";
 import "./App.css";
@@ -28,6 +29,9 @@ export default function App() {
               </Route>
               <Route exact path="/order">
                 <OrderPage />
+              </Route>
+              <Route exact path="/muiprimer">
+                <Muiprimer />
               </Route>
             </Switch>
           </div>

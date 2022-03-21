@@ -10,6 +10,8 @@ import {
   deleteItemFromIzbranoe,
   setItemInIzbranoe,
 } from "../redux/izbranoe/reducer";
+import { useState } from "react";
+import axios from "axios";
 
 export function Ticket({ ticket }) {
   // if (stop) {
@@ -43,11 +45,25 @@ export function Ticket({ ticket }) {
       dispatch(setItemInCart(ticket));
     }
   };
+  //dcdcdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+  const [ticketPrice, setticketPrice] = useState(ticket.price2);
+  const upgradeHandlPrace = (ticketid, ticketPrice) => {
+    console.log("sdas");
+    axios
+      .put(`http://localhost:5000/putprice/${ticketid}`, { body: ticketPrice })
+      .then((res) => console.log(res.data));
+    console.log("sdas");
+  };
 
   return (
     <div className="ticket">
       <div className="ticket__header">
-        <div className="ticket__price">{ticket.price}</div>
+        <div className="ticket__price">
+          <input
+            value={ticketPrice}
+            onChange={(x) => setticketPrice(x.target.value)}
+          />
+        </div>
         <div className="ticket__logo">
           <img src={ticket.carrier} alt="sad" />
         </div>
@@ -57,6 +73,7 @@ export function Ticket({ ticket }) {
           <TicketData key={uuidv4()} segment={segment} />
         ))}
       </div>
+      {/* //Tododdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd: sdfsdf */}
       <div
         style={{
           display: "flex",
@@ -86,6 +103,19 @@ export function Ticket({ ticket }) {
           onClick={handleClickInCart}
         >
           {isItemInCart ? "Из корзины" : "В Корзину"}
+        </button>
+      </div>
+      {/* //Todo: sdfdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddsdf */}
+      <div>
+        <button
+          style={{
+            cursor: "pointer",
+            background: isItemInCart ? "#2196f3" : null,
+            color: isItemInCart ? "#ffffff" : null,
+          }}
+          onClick={() => upgradeHandlPrace(ticket.id, ticketPrice)}
+        >
+          {isItemInCart ? "Из корзины" : "Обновить"}
         </button>
       </div>
     </div>

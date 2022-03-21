@@ -88,6 +88,25 @@ export function Header() {
           В корзине {ticketInCart.length}
         </button>
       </Link>
+      <Link to="/muiprimer">
+        <div></div>
+        <button
+        // style={{
+        //   cursor: "pointer",
+        //   background: nagal.three ? "#2196f3" : null,
+        //   color: nagal.three ? "#ffffff" : null,
+        // }}
+        // onClick={() =>
+        //   setnagal({
+        //     one: false,
+        //     two: false,
+        //     three: true,
+        //   })
+        // }
+        >
+          Muiprimer
+        </button>
+      </Link>
     </div>
   );
 }
